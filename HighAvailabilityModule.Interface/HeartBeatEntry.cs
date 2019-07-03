@@ -22,6 +22,6 @@
 
         public bool IsEmpty => string.IsNullOrEmpty(this.Uuid);
 
-        public static HeartBeatEntry Empty { get; } = new HeartBeatEntry(string.Empty, string.Empty, string.Empty, default);
+        public static HeartBeatEntry Empty { get; } = new HeartBeatEntry(string.Empty, string.Empty, string.Empty, Convert.ToDateTime("1753-01-01 12:00:00.000"));
     }
 }
