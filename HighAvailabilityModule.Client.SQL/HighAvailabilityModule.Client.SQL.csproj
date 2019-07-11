@@ -1,9 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <LangVersion>latest</LangVersion>
+    <ApplicationIcon />
+    <StartupObject />
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HighAvailabilityModule.Algorithm\HighAvailabilityModule.Algorithm.csproj" />
     <ProjectReference Include="..\HighAvailabilityModule.Interface\HighAvailabilityModule.Interface.csproj" />
   </ItemGroup>
 

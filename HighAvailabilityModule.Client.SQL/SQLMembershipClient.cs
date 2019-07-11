@@ -17,6 +17,8 @@
 
         public TimeSpan OperationTimeout { get; set; }
 
+        public string ConStr { get; set; }
+
         private string timeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
         public SQLMembershipClient(string utype, string uname)
@@ -24,15 +26,16 @@
             this.Uuid = Guid.NewGuid().ToString();
             this.Utype = utype;
             this.Uname = uname;
+            this.ConStr = "server=.;database=HighAvailabilityWitness;Trusted_Connection=SSPI;Connect Timeout=5";
         }
 
         public async Task HeartBeatAsync(HeartBeatEntryDTO entryDTO)
         {
-            string ConStr = "server=.;database=HighAvailabilityModule;Trusted_Connection=SSPI";
-            SqlConnection con = new SqlConnection(ConStr);
+            SqlConnection con = new SqlConnection(this.ConStr);
             string StoredProcedure = "dbo.HeartBeatAsync";
             SqlCommand comStr = new SqlCommand(StoredProcedure, con);
             comStr.CommandType = CommandType.StoredProcedure;
+            comStr.CommandTimeout = this.OperationTimeout.Seconds;
 
             comStr.Parameters.Add("@uuid", SqlDbType.NVarChar).Value = entryDTO.Uuid;
             comStr.Parameters.Add("@utype", SqlDbType.NVarChar).Value = entryDTO.Utype;
@@ -41,55 +44,62 @@
             comStr.Parameters.Add("@lastSeenUtype", SqlDbType.NVarChar).Value = entryDTO.LastSeenEntry.Utype;
             comStr.Parameters.Add("@lastSeenTimeStamp", SqlDbType.DateTime).Value = entryDTO.LastSeenEntry.TimeStamp.ToString(this.timeFormat);
 
-            con.Open();
-            if (con.State == ConnectionState.Open)
+            try
             {
-                comStr.ExecuteNonQuery();
-                con.Close();
+                await con.OpenAsync();
+                await comStr.ExecuteNonQueryAsync();
             }
-            else
+            catch (Exception ex)
             {
-                throw new InvalidOperationException($"[{this.Uuid}] Can't connect to the SQL Server.");
+                throw new Exception($"[{this.Uuid}] Error occured when sending heartbeat entry: {ex.ToString()}");
+            }
+            finally
+            {
+                con.Close();
+                con.Dispose();
             }
         }
 
         public async Task<HeartBeatEntry> GetHeartBeatEntryAsync(string utype)
         {
-            HeartBeatEntry heartBeatEntry = null;
-            string ConStr = "server=.;database=HighAvailabilityModule;Trusted_Connection=SSPI";
-            SqlConnection con = new SqlConnection(ConStr);
+            HeartBeatEntry heartBeatEntry;
+            SqlConnection con = new SqlConnection(this.ConStr);
             string StoredProcedure = "dbo.GetHeartBeatAsync";
             SqlCommand comStr = new SqlCommand(StoredProcedure, con);
             comStr.CommandType = CommandType.StoredProcedure;
+            comStr.CommandTimeout = this.OperationTimeout.Seconds;
 
             comStr.Parameters.Add("@utype", SqlDbType.NVarChar).Value = utype;
 
-            con.Open();
-            if (con.State == ConnectionState.Open)
+            try
             {
-                SqlDataReader ReturnedEntry = comStr.ExecuteReader();
+                await con.OpenAsync();
+                SqlDataReader ReturnedEntry = await comStr.ExecuteReaderAsync();
                 if (ReturnedEntry.HasRows)
                 {
-                    if (ReturnedEntry.Read())
-                    {
-                        heartBeatEntry = new HeartBeatEntry(ReturnedEntry[0].ToString(), ReturnedEntry[1].ToString(),
-                            ReturnedEntry[2].ToString(), Convert.ToDateTime(Convert.ToDateTime(ReturnedEntry[3]).ToString(this.timeFormat)));
-                    }
+                    ReturnedEntry.Read();
+                    heartBeatEntry = new HeartBeatEntry(ReturnedEntry[0].ToString(), ReturnedEntry[1].ToString(),
+                        ReturnedEntry[2].ToString(), Convert.ToDateTime(Convert.ToDateTime(ReturnedEntry[3]).ToString(this.timeFormat)));
+                    
+                    ReturnedEntry.Close();
                 }
                 else
                 {
                     heartBeatEntry = HeartBeatEntry.Empty;
                 }
-                con.Close();
                 return heartBeatEntry;
             }
-            else
+            catch (Exception ex)
             {
-                throw new InvalidOperationException($"[{this.Uuid}] Can't connect to the SQL Server.");
+                throw new Exception($"[{this.Uuid}] Error occured when getting heartbeat entry: {ex.ToString()}");
+            }
+            finally
+            {
+                con.Close();
+                con.Dispose();
             }
         }
 
         public string GenerateUuid() => this.Uuid;
     }
 }
-

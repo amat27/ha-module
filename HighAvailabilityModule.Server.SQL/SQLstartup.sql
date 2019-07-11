@@ -1,19 +1,19 @@
 USE master;
 GO
-IF EXISTS (SELECT * FROM sys.databases WHERE NAME='HighAvailabilityModule')
-	DROP DATABASE HighAvailabilityModule;
+IF EXISTS (SELECT * FROM sys.databases WHERE NAME='HighAvailabilityWitness')
+	DROP DATABASE HighAvailabilityWitness;
 GO
-CREATE DATABASE HighAvailabilityModule;
+CREATE DATABASE HighAvailabilityWitness;
 GO
 
-USE HighAvailabilityModule;
+USE HighAvailabilityWitness;
 GO
 IF OBJECT_ID('HeartBeatTable') IS NOT NULL
 	DROP TABLE HeartBeatTable;
 GO
 CREATE TABLE HeartBeatTable
 (uuid nvarchar(50),
-utype nvarchar(50),
+utype nvarchar(50) NOT NULL PRIMARY KEY,
 uname nvarchar(50),
 timeStamp datetime);
 GO
@@ -76,10 +76,8 @@ RETURNS bit
 AS
 	BEGIN
 		DECLARE @IsValid bit;
-		DECLARE @TimeDefault datetime;
-		SET @TimeDefault = CONVERT(DATETIME,'1753-01-01 12:00:00.000',21);
 		IF (NOT EXISTS(SELECT * FROM dbo.HeartBeatTable WHERE utype = @utype)) 
-			OR (dbo.HeartBeatInvalid(@utype, @now) = 1 AND (@lastSeenUuid = '') AND (@lastSeenUtype = '') AND(@lastSeenTimeStamp = @TimeDefault))
+			OR (dbo.HeartBeatInvalid(@utype, @now) = 1 AND (@lastSeenUuid = '') AND (@lastSeenUtype = ''))
 			OR (dbo.LastSeenEntryValid(@utype, @lastSeenUuid, @lastSeenUtype, @lastSeenTimeStamp) = 1 
 			AND ((SELECT uuid FROM dbo.HeartBeatTable WHERE utype = @utype) = @uuid) AND ((SELECT utype FROM dbo.HeartBeatTable WHERE utype=@utype)=@utype))
 			SET @IsValid = 1;
@@ -89,7 +87,7 @@ AS
 	END
 GO
 
-USE HighAvailabilityModule;
+USE HighAvailabilityWitness;
 GO
 IF OBJECT_ID('HeartBeatAsync') IS NOT NULL
 	DROP PROCEDURE HeartBeatAsync;
@@ -102,22 +100,29 @@ CREATE PROCEDURE HeartBeatAsync
 	@lastSeenUtype nvarchar(50),
 	@lastSeenTimeStamp datetime
 AS
-	SET NOCOUNT ON;
-	DECLARE @now datetime;
-	SET @now = CONVERT(DATETIME, GETDATE(), 21);
-	IF dbo.ValidInput(@uuid, @utype, @lastSeenUuid, @lastSeenUtype, @lastSeenTimeStamp, @now) = 1
-		BEGIN
-			IF NOT EXISTS (SELECT * FROM dbo.HeartBeatTable WHERE utype = @utype)
-				INSERT INTO dbo.HeartBeatTable(uuid, utype, uname, timeStamp)
-				VALUES(@uuid, @utype, @uname, @now);
-			ELSE
-				UPDATE dbo.HeartBeatTable
-				SET uuid = @uuid, utype = @utype, uname = @uname, timeStamp = @now
-				WHERE utype = @utype;
-		END
+	BEGIN TRY
+		BEGIN TRAN
+			SET NOCOUNT ON;
+			DECLARE @now datetime;
+			SET @now = GETDATE();
+			IF dbo.ValidInput(@uuid, @utype, @lastSeenUuid, @lastSeenUtype, @lastSeenTimeStamp, @now) = 1
+				BEGIN
+					IF NOT EXISTS (SELECT * FROM dbo.HeartBeatTable WHERE utype = @utype)
+						INSERT INTO dbo.HeartBeatTable (uuid, utype, uname, timeStamp)
+						VALUES(@uuid, @utype, @uname, @now);
+					ELSE
+						UPDATE dbo.HeartBeatTable
+						SET uuid = @uuid, utype = @utype, uname = @uname, timeStamp = @now
+						WHERE utype = @utype AND timeStamp = @lastSeenTimeStamp;
+				END
+		COMMIT TRAN
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRAN
+	END CATCH
 GO
 
-USE HighAvailabilityModule;
+USE HighAvailabilityWitness;
 GO
 IF OBJECT_ID('GetHeartBeatAsync') IS NOT NULL
 	DROP PROCEDURE GetHeartBeatAsync;
@@ -127,9 +132,21 @@ CREATE PROCEDURE GetHeartBeatAsync
 AS
 	SET NOCOUNT ON
 	DECLARE @now datetime;
-	SET @now = CONVERT(DATETIME, GETDATE(), 21);
+	SET @now = GETDATE();
 	IF dbo.HeartBeatInvalid(@utype, @now) = 1
-		SELECT * FROM dbo.HeartBeatTable WHERE utype = NULL;
+		BEGIN
+			DECLARE @OldTime datetime;
+			IF NOT EXISTS (SELECT timeStamp FROM dbo.HeartBeatTable WHERE utype = @utype)
+				BEGIN
+					SET @OldTime = CONVERT(DATETIME,'1753-01-01 12:00:00.000',21);
+					SELECT '' AS uuid, '' AS utype, '' AS uname, @OldTime AS timeStamp
+				END
+			ELSE
+				BEGIN
+					SELECT @OLDTIME = timeStamp FROM dbo.HeartBeatTable WHERE utype = @utype;
+					SELECT '' AS uuid, '' AS utype, '' AS uname, @OldTime AS timeStamp;
+				END
+		END
 	ELSE
-		SELECT * FROM dbo.HeartBeatTable WHERE utype=@utype;
+		SELECT TOP 1 * FROM dbo.HeartBeatTable WHERE utype=@utype;
 GO
