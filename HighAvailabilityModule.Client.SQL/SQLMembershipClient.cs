@@ -32,7 +32,7 @@
         public async Task HeartBeatAsync(HeartBeatEntryDTO entryDTO)
         {
             SqlConnection con = new SqlConnection(this.ConStr);
-            string StoredProcedure = "dbo.HeartBeatAsync";
+            string StoredProcedure = "dbo.HeartBeat";
             SqlCommand comStr = new SqlCommand(StoredProcedure, con);
             comStr.CommandType = CommandType.StoredProcedure;
             comStr.CommandTimeout = this.OperationTimeout.Seconds;
@@ -64,7 +64,7 @@
         {
             HeartBeatEntry heartBeatEntry;
             SqlConnection con = new SqlConnection(this.ConStr);
-            string StoredProcedure = "dbo.GetHeartBeatAsync";
+            string StoredProcedure = "dbo.GetHeartBeat";
             SqlCommand comStr = new SqlCommand(StoredProcedure, con);
             comStr.CommandType = CommandType.StoredProcedure;
             comStr.CommandTimeout = this.OperationTimeout.Seconds;

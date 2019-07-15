@@ -76,6 +76,8 @@ RETURNS bit
 AS
 	BEGIN
 		DECLARE @IsValid bit;
+		--DECLARE @TimeDefault datetime;
+		--SET @TimeDefault = CONVERT(DATETIME,'1753-01-01 12:00:00.000',21);
 		IF (NOT EXISTS(SELECT * FROM dbo.HeartBeatTable WHERE utype = @utype)) 
 			OR (dbo.HeartBeatInvalid(@utype, @now) = 1 AND (@lastSeenUuid = '') AND (@lastSeenUtype = ''))
 			OR (dbo.LastSeenEntryValid(@utype, @lastSeenUuid, @lastSeenUtype, @lastSeenTimeStamp) = 1 
@@ -89,22 +91,23 @@ GO
 
 USE HighAvailabilityWitness;
 GO
-IF OBJECT_ID('HeartBeatAsync') IS NOT NULL
-	DROP PROCEDURE HeartBeatAsync;
+IF OBJECT_ID('HeartBeat') IS NOT NULL
+	DROP PROCEDURE HeartBeat;
 GO
-CREATE PROCEDURE HeartBeatAsync
+CREATE PROCEDURE HeartBeat
 	@uuid nvarchar(50),
 	@utype nvarchar(50),
 	@uname nvarchar(50),
 	@lastSeenUuid nvarchar(50),
 	@lastSeenUtype nvarchar(50),
-	@lastSeenTimeStamp datetime
+	@lastSeenTimeStamp datetime,
+	@now datetime = NULL
 AS
 	BEGIN TRY
 		BEGIN TRAN
 			SET NOCOUNT ON;
-			DECLARE @now datetime;
-			SET @now = GETDATE();
+			IF @now IS NULL
+				SET @now = GETDATE();
 			IF dbo.ValidInput(@uuid, @utype, @lastSeenUuid, @lastSeenUtype, @lastSeenTimeStamp, @now) = 1
 				BEGIN
 					IF NOT EXISTS (SELECT * FROM dbo.HeartBeatTable WHERE utype = @utype)
@@ -124,15 +127,16 @@ GO
 
 USE HighAvailabilityWitness;
 GO
-IF OBJECT_ID('GetHeartBeatAsync') IS NOT NULL
-	DROP PROCEDURE GetHeartBeatAsync;
+IF OBJECT_ID('GetHeartBeat') IS NOT NULL
+	DROP PROCEDURE GetHeartBeat;
 GO
-CREATE PROCEDURE GetHeartBeatAsync
-	@utype nvarchar(50)
+CREATE PROCEDURE GetHeartBeat
+	@utype nvarchar(50),
+	@now datetime = NULL
 AS
 	SET NOCOUNT ON
-	DECLARE @now datetime;
-	SET @now = GETDATE();
+	IF @now IS NULL
+		SET @now = GETDATE();
 	IF dbo.HeartBeatInvalid(@utype, @now) = 1
 		BEGIN
 			DECLARE @OldTime datetime;
