@@ -36,9 +36,9 @@ BEGIN
 	SET @lastSeenTimeStamp = '';
 	SET @lastSeenUtype = '';
 	SET @lastSeenTimeStamp = CONVERT(DATETIME,'1753-01-01 12:00:00.000',21);
-	SET @now = GETDATE();
+	SET @now = CONVERT(DATETIME,'2019-07-11 12:00:00.000',21);
 
-	EXEC dbo.HeartBeat @uuid, @utype, @uname, @lastSeenUuid, @lastSeenUtype, @lastSeenTimeStamp;
+	EXEC dbo.HeartBeat @uuid, @utype, @uname, @lastSeenUuid, @lastSeenUtype, @lastSeenTimeStamp, @now;
 
 	SELECT uuid, utype, uname, timeStamp INTO MembershipServerSQLUnitTest_Actual FROM dbo.HeartBeatTable WHERE utype = @utype;
 	INSERT INTO MembershipServerSQLUnitTest_Excepted (uuid, utype, uname, timeStamp) VALUES(@uuid, @utype, @uname, @now);

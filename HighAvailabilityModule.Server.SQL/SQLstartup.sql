@@ -76,11 +76,9 @@ RETURNS bit
 AS
 	BEGIN
 		DECLARE @IsValid bit;
-		--DECLARE @TimeDefault datetime;
-		--SET @TimeDefault = CONVERT(DATETIME,'1753-01-01 12:00:00.000',21);
 		IF (NOT EXISTS(SELECT * FROM dbo.HeartBeatTable WHERE utype = @utype)) 
-			OR (dbo.HeartBeatInvalid(@utype, @now) = 1 AND (@lastSeenUuid = '') AND (@lastSeenUtype = ''))
-			OR (dbo.LastSeenEntryValid(@utype, @lastSeenUuid, @lastSeenUtype, @lastSeenTimeStamp) = 1 
+			OR ((dbo.HeartBeatInvalid(@utype, @now) = 1) AND (@lastSeenUuid = '') AND (@lastSeenUtype = ''))
+			OR ((dbo.LastSeenEntryValid(@utype, @lastSeenUuid, @lastSeenUtype, @lastSeenTimeStamp) = 1) 
 			AND ((SELECT uuid FROM dbo.HeartBeatTable WHERE utype = @utype) = @uuid) AND ((SELECT utype FROM dbo.HeartBeatTable WHERE utype=@utype)=@utype))
 			SET @IsValid = 1;
 		ELSE
