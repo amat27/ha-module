@@ -1,4 +1,4 @@
-# Anticorruption HA Module [![Build Status](https://dev.azure.com/BigComputeShanghai/HPC%20HA/_apis/build/status/leexx227.ha-module?branchName=azure-pipeines)](https://dev.azure.com/BigComputeShanghai/HPC%20HA/_build/latest?definitionId=3&branchName=azure-pipeines) [![codecov](https://codecov.io/gh/amat27/ha-module/branch/develop/graph/badge.svg)](https://codecov.io/gh/amat27/ha-module)
+# Anticorruption HA Module [![Build Status](https://dev.azure.com/BigComputeShanghai/HPC%20HA/_apis/build/status/leexx227.ha-module?branchName=azure-pipelines)](https://dev.azure.com/BigComputeShanghai/HPC%20HA/_build/latest?definitionId=3&branchName=azure-pipelines) [![codecov](https://codecov.io/gh/amat27/ha-module/branch/develop/graph/badge.svg)](https://codecov.io/gh/amat27/ha-module)
 Algorithms for doing leader election and name resolving with the help of another HA system, serves as anticorruption layer.
 
 ## Specification
