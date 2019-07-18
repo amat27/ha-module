@@ -8,6 +8,15 @@ uname nvarchar(50),
 timeStamp datetime);
 GO
 
+IF OBJECT_ID('ParameterTable') IS NOT NULL
+	DROP TABLE ParameterTable;
+GO
+CREATE TABLE ParameterTable
+(heartbeatTimeOut int);
+INSERT INTO dbo.ParameterTable (heartbeatTimeOut)
+VALUES(1000);
+GO
+
 IF OBJECT_ID('HeartBeatInvalid') IS NOT NULL
 	DROP FUNCTION HeartBeatInvalid;
 GO
@@ -18,8 +27,8 @@ RETURNS bit
 AS
 	BEGIN
 		DECLARE @InValid bit;
-		DECLARE @TimeOut real;
-		SET @TimeOut = 1000;
+		DECLARE @TimeOut int;
+		SELECT @TimeOut = heartbeatTimeOut FROM dbo.ParameterTable;
 		IF (NOT EXISTS(SELECT * FROM dbo.HeartBeatTable WHERE utype = @utype))
 			OR (DATEDIFF(MILLISECOND, (SELECT timeStamp FROM dbo.HeartBeatTable WHERE utype = @utype), @now) >= @TimeOut)
 			SET @InValid = 1;
@@ -136,5 +145,5 @@ AS
 				END
 		END
 	ELSE
-		SELECT TOP 1 * FROM dbo.HeartBeatTable WHERE utype=@utype;
+		SELECT TOP 1 uuid, utype, uname, timeStamp FROM dbo.HeartBeatTable WHERE utype=@utype;
 GO
