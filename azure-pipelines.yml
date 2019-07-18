@@ -21,27 +21,27 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+# - task: VSBuild@1
+#   inputs:
+#     solution: '$(solution)'
+#     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
+#     platform: '$(buildPlatform)'
+#     configuration: '$(buildConfiguration)'
 
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+# - task: VSTest@2
+#   inputs:
+#     platform: '$(buildPlatform)'
+#     configuration: '$(buildConfiguration)'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'build'
+# - task: DotNetCoreCLI@2
+#   inputs:
+#     command: 'build'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: test
-    projects: '**/*Test/*.csproj'
-    arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+# - task: DotNetCoreCLI@2
+#   inputs:
+#     command: test
+#     projects: '**/*Test/*.csproj'
+#     arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
 
 - task: SqlAzureDacpacDeployment@1
   inputs:
@@ -81,7 +81,7 @@ steps:
 
 - task: runtsqltunittests@0
   inputs:
-    connectionString: 'Server=tcp:ha-module-server.database.windows.net,1433;Initial Catalog=HighAvailabilityWitness;Persist Security Info=False;User ID={your_username};Password={your_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
+    connectionString: 'Server=tcp:ha-module-server.database.windows.net,1433;Initial Catalog=HighAvailabilityWitness;Persist Security Info=False;User ID=hpcadmin;Password=!!123abc!!123abc;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
     queryTimeout: '60'
     rootOutput: '$(System.DefaultWorkingDirectory)/tSQLt-out'
     testResultsFileName: 'TEST-Results.xml'
