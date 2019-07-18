@@ -1,13 +1,3 @@
-USE master;
-GO
-IF EXISTS (SELECT * FROM sys.databases WHERE NAME='HighAvailabilityWitness')
-	DROP DATABASE HighAvailabilityWitness;
-GO
-CREATE DATABASE HighAvailabilityWitness;
-GO
-
-USE HighAvailabilityWitness;
-GO
 IF OBJECT_ID('HeartBeatTable') IS NOT NULL
 	DROP TABLE HeartBeatTable;
 GO
@@ -87,8 +77,6 @@ AS
 	END
 GO
 
-USE HighAvailabilityWitness;
-GO
 IF OBJECT_ID('HeartBeat') IS NOT NULL
 	DROP PROCEDURE HeartBeat;
 GO
@@ -123,8 +111,6 @@ AS
 	END CATCH
 GO
 
-USE HighAvailabilityWitness;
-GO
 IF OBJECT_ID('GetHeartBeat') IS NOT NULL
 	DROP PROCEDURE GetHeartBeat;
 GO
