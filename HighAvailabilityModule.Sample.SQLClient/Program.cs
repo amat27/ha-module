@@ -40,7 +40,7 @@
             var interval = TimeSpan.FromSeconds(0.2);
             var timeout = TimeSpan.FromSeconds(5);
 
-            SQLMembershipClient client = new SQLMembershipClient(utype, uname);
+            SQLMembershipClient client = new SQLMembershipClient(utype, uname, interval);
             MembershipWithWitness algo = new MembershipWithWitness(client, interval, timeout);
 
             Console.WriteLine("Uuid:{0}", client.Uuid);
