@@ -145,5 +145,5 @@ AS
 				END
 		END
 	ELSE
-		SELECT * FROM dbo.HeartBeatTable WHERE utype=@utype;
+		SELECT TOP 1 uuid, utype, uname, timeStamp FROM dbo.HeartBeatTable WHERE utype=@utype;
 GO
