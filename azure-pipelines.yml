@@ -21,27 +21,27 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
-# - task: VSBuild@1
-#   inputs:
-#     solution: '$(solution)'
-#     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
-#     platform: '$(buildPlatform)'
-#     configuration: '$(buildConfiguration)'
+- task: VSBuild@1
+  inputs:
+    solution: '$(solution)'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
 
-# - task: VSTest@2
-#   inputs:
-#     platform: '$(buildPlatform)'
-#     configuration: '$(buildConfiguration)'
+- task: VSTest@2
+  inputs:
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
 
-# - task: DotNetCoreCLI@2
-#   inputs:
-#     command: 'build'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
 
-# - task: DotNetCoreCLI@2
-#   inputs:
-#     command: test
-#     projects: '**/*Test/*.csproj'
-#     arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: test
+    projects: '**/*Test/*.csproj'
+    arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
 
 - task: SqlAzureDacpacDeployment@1
   inputs:
@@ -85,12 +85,10 @@ steps:
     queryTimeout: '60'
     rootOutput: '$(System.DefaultWorkingDirectory)/tSQLt-out'
     testResultsFileName: 'TEST-Results.xml'
-    enableCodeCoverage: true
+    enableCodeCoverage: false
     coberturaFileName: 'Cobertura.xml'
     htmlReportsOutput: '$(System.DefaultWorkingDirectory)/AzurePipelines'
     testOrClassName: '123'
-
-
 
 - task: PublishTestResults@2
   inputs:
