@@ -87,7 +87,7 @@ steps:
     testResultsFileName: 'TEST-Results.xml'
     enableCodeCoverage: true
     coberturaFileName: 'Cobertura.xml'
-    htmlReportsOutput: 'AzurePipelines'
+    htmlReportsOutput: 'AzurePipelines.html'
     testOrClassName: '123'
 
 - task: PublishTestResults@2
@@ -99,4 +99,4 @@ steps:
 #   inputs:
 #     codeCoverageTool: 'Cobertura'
 #     summaryFileLocation: '$(Build.SourcesDirectory)/out/Cobertura.xml'
-#     reportDirectory: '$(Build.SourcesDirectory)/out/AzurePipelines'
+#     reportDirectory: '$(Build.SourcesDirectory)/out/AzurePipelines.html'
