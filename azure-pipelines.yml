@@ -85,9 +85,9 @@ steps:
     queryTimeout: '60'
     rootOutput: '$(System.DefaultWorkingDirectory)/tSQLt-out'
     testResultsFileName: 'TEST-Results.xml'
-    enableCodeCoverage: false
+    enableCodeCoverage: true
     coberturaFileName: 'Cobertura.xml'
-    htmlReportsOutput: 'AzurePipelines'
+    htmlReportsOutput: '$(System.DefaultWorkingDirectory)/AzurePipelines'
     testOrClassName: '123'
 
 
