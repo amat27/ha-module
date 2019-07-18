@@ -79,25 +79,34 @@ steps:
     SqlFile: '$(System.DefaultWorkingDirectory)/HighAvailabilityModule.UnitTest.SQL/MembershipServerSQLUnitTest.sql'
     IpDetectionMethod: 'AutoDetect'
 
+# - task: runtsqltunittests@0
+#   inputs:
+#     connectionString: 'Server=tcp:ha-module-server.database.windows.net,1433;Initial Catalog=HighAvailabilityWitness;Persist Security Info=False;User ID=hpcadmin;Password=!!123abc!!123abc;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
+#     queryTimeout: '60'
+#     rootOutput: '$(System.DefaultWorkingDirectory)/tSQLt-out'
+#     testResultsFileName: 'TEST-Results.xml'
+#     enableCodeCoverage: true
+#     coberturaFileName: 'Cobertura.xml'
+#     htmlReportsOutput: 'AzurePipelines'
+#     testOrClassName: '123'
+
 - task: runtsqltunittests@0
   inputs:
     connectionString: 'Server=tcp:ha-module-server.database.windows.net,1433;Initial Catalog=HighAvailabilityWitness;Persist Security Info=False;User ID=hpcadmin;Password=!!123abc!!123abc;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
     queryTimeout: '60'
     rootOutput: '$(System.DefaultWorkingDirectory)/tSQLt-out'
     testResultsFileName: 'TEST-Results.xml'
-    enableCodeCoverage: true
+    enableCodeCoverage: false
     coberturaFileName: 'Cobertura.xml'
     htmlReportsOutput: 'AzurePipelines'
-    testOrClassName: '123'
 
+# - task: PublishTestResults@2
+#   inputs:
+#     testResultsFormat: 'JUnit'
+#     testResultsFiles: '**/TEST-*.xml'
 
-- task: PublishTestResults@2
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '**/TEST-*.xml'
-
-- task: PublishCodeCoverageResults@1
-  inputs:
-    codeCoverageTool: 'Cobertura'
-    summaryFileLocation: '$(Build.SourcesDirectory)/out/Cobertura.xml'
-    reportDirectory: '$(Build.SourcesDirectory)/out/AzurePipelines'
+# - task: PublishCodeCoverageResults@1
+#   inputs:
+#     codeCoverageTool: 'Cobertura'
+#     summaryFileLocation: '$(Build.SourcesDirectory)/out/Cobertura.xml'
+#     reportDirectory: '$(Build.SourcesDirectory)/out/AzurePipelines'
