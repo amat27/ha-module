@@ -87,8 +87,10 @@ steps:
     testResultsFileName: 'TEST-Results.xml'
     enableCodeCoverage: true
     coberturaFileName: 'Cobertura.xml'
-    htmlReportsOutput: 'AzurePipelines.html'
+    htmlReportsOutput: 'AzurePipelines'
     testOrClassName: '123'
+
+
 
 - task: PublishTestResults@2
   inputs:
