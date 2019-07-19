@@ -21,19 +21,23 @@
 
         private string timeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
-        public SQLMembershipClient(string utype, string uname, TimeSpan operationTimeout)
+        private const string HeartBeatStr = "dbo.HeartBeat";
+
+        private const string GetHeartBeatStr = "dbo.GetHeartBeat";
+
+        public SQLMembershipClient(string utype, string uname, TimeSpan operationTimeout, string server, string database)
         {
             this.Uuid = Guid.NewGuid().ToString();
             this.Utype = utype;
             this.Uname = uname;
             this.OperationTimeout = operationTimeout;
-            this.ConStr = "server=.;database=HighAvailabilityWitness;Trusted_Connection=SSPI;Connect Timeout=" + Convert.ToInt32(Math.Ceiling(this.OperationTimeout.TotalSeconds)).ToString();
+            this.ConStr = "server=" + server + ";database=" + database + ";Trusted_Connection=SSPI;Connect Timeout=" + Convert.ToInt32(Math.Ceiling(this.OperationTimeout.TotalSeconds)).ToString();
         }
 
         public async Task HeartBeatAsync(HeartBeatEntryDTO entryDTO)
         {
             SqlConnection con = new SqlConnection(this.ConStr);
-            string StoredProcedure = "dbo.HeartBeat";
+            string StoredProcedure = HeartBeatStr;
             SqlCommand comStr = new SqlCommand(StoredProcedure, con);
             comStr.CommandType = CommandType.StoredProcedure;
             comStr.CommandTimeout = Convert.ToInt32(Math.Ceiling(this.OperationTimeout.TotalSeconds));
@@ -67,7 +71,7 @@
         {
             HeartBeatEntry heartBeatEntry;
             SqlConnection con = new SqlConnection(this.ConStr);
-            string StoredProcedure = "dbo.GetHeartBeat";
+            string StoredProcedure = GetHeartBeatStr;
             SqlCommand comStr = new SqlCommand(StoredProcedure, con);
             comStr.CommandType = CommandType.StoredProcedure;
             comStr.CommandTimeout = Convert.ToInt32(Math.Ceiling(this.OperationTimeout.TotalSeconds));

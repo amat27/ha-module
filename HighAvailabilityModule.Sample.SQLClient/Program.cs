@@ -40,7 +40,10 @@
             var interval = TimeSpan.FromSeconds(0.2);
             var timeout = TimeSpan.FromSeconds(5);
 
-            SQLMembershipClient client = new SQLMembershipClient(utype, uname, interval);
+            string server = ".";
+            string database = "HighAvailabilityWitness";
+
+            SQLMembershipClient client = new SQLMembershipClient(utype, uname, interval, server, database);
             MembershipWithWitness algo = new MembershipWithWitness(client, interval, timeout);
 
             Console.WriteLine("Uuid:{0}", client.Uuid);
@@ -53,11 +56,18 @@
                 {
                     foreach (string qtype in AllType)
                     {
-                        var primary = await client.GetHeartBeatEntryAsync(qtype);
-                        if (!primary.IsEmpty)
+                        try
                         {
-                            Console.WriteLine($"[Query Result] Type:{primary.Utype}. Machine Name:{primary.Uname}. Running as primary. [{primary.TimeStamp}]");
-                            await Task.Delay(TimeSpan.FromSeconds(2));
+                            var primary = await client.GetHeartBeatEntryAsync(qtype);
+                            if (!primary.IsEmpty)
+                            {
+                                Console.WriteLine($"[Query Result] Type:{primary.Utype}. Machine Name:{primary.Uname}. Running as primary. [{primary.TimeStamp}]");
+                                await Task.Delay(TimeSpan.FromSeconds(2));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"[{client.Uuid}] Error occured when querying heartbeat entry: {ex.ToString()}");
                         }
                     }
                 }
