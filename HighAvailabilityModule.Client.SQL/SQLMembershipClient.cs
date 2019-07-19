@@ -21,21 +21,26 @@
 
         private string timeFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
-        public SQLMembershipClient(string utype, string uname)
+        private const string HeartBeatSpName = "dbo.HeartBeat";
+
+        private const string GetHeartBeatSpName = "dbo.GetHeartBeat";
+
+        public SQLMembershipClient(string utype, string uname, TimeSpan operationTimeout, string server, string database)
         {
             this.Uuid = Guid.NewGuid().ToString();
             this.Utype = utype;
             this.Uname = uname;
-            this.ConStr = "server=.;database=HighAvailabilityWitness;Trusted_Connection=SSPI;Connect Timeout=5";
+            this.OperationTimeout = operationTimeout;
+            this.ConStr = "server=" + server + ";database=" + database + ";Trusted_Connection=SSPI;Connect Timeout=" + Convert.ToInt32(Math.Ceiling(this.OperationTimeout.TotalSeconds)).ToString();
         }
 
         public async Task HeartBeatAsync(HeartBeatEntryDTO entryDTO)
         {
             SqlConnection con = new SqlConnection(this.ConStr);
-            string StoredProcedure = "dbo.HeartBeat";
+            string StoredProcedure = HeartBeatSpName;
             SqlCommand comStr = new SqlCommand(StoredProcedure, con);
             comStr.CommandType = CommandType.StoredProcedure;
-            comStr.CommandTimeout = this.OperationTimeout.Seconds;
+            comStr.CommandTimeout = Convert.ToInt32(Math.Ceiling(this.OperationTimeout.TotalSeconds));
 
             comStr.Parameters.Add("@uuid", SqlDbType.NVarChar).Value = entryDTO.Uuid;
             comStr.Parameters.Add("@utype", SqlDbType.NVarChar).Value = entryDTO.Utype;
@@ -51,12 +56,14 @@
             }
             catch (Exception ex)
             {
-                throw new Exception($"[{this.Uuid}] Error occured when sending heartbeat entry: {ex.ToString()}");
+                Console.WriteLine($"[{this.Uuid}] Error occured when sending heartbeat entry: {ex.ToString()}");
+                throw;
             }
             finally
             {
                 con.Close();
                 con.Dispose();
+                comStr.Dispose();
             }
         }
 
@@ -64,10 +71,10 @@
         {
             HeartBeatEntry heartBeatEntry;
             SqlConnection con = new SqlConnection(this.ConStr);
-            string StoredProcedure = "dbo.GetHeartBeat";
+            string StoredProcedure = GetHeartBeatSpName;
             SqlCommand comStr = new SqlCommand(StoredProcedure, con);
             comStr.CommandType = CommandType.StoredProcedure;
-            comStr.CommandTimeout = this.OperationTimeout.Seconds;
+            comStr.CommandTimeout = Convert.ToInt32(Math.Ceiling(this.OperationTimeout.TotalSeconds));
 
             comStr.Parameters.Add("@utype", SqlDbType.NVarChar).Value = utype;
 
@@ -91,12 +98,14 @@
             }
             catch (Exception ex)
             {
-                throw new Exception($"[{this.Uuid}] Error occured when getting heartbeat entry: {ex.ToString()}");
+                Console.WriteLine($"[{this.Uuid}] Error occured when getting heartbeat entry: {ex.ToString()}");
+                throw;
             }
             finally
             {
                 con.Close();
                 con.Dispose();
+                comStr.Dispose();
             }
         }
 
