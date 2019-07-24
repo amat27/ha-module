@@ -58,11 +58,16 @@
                 {
                     this.lastError = (entry, DateTime.UtcNow);
                 }
-                else if (DateTime.UtcNow - this.lastError.Value.queryTime > (this.Interval + this.Timeout)) 
+                else if (DateTime.UtcNow - this.lastError.Value.queryTime > (2 * this.Timeout)) 
                 {
                     Trace.TraceError("Liveness violation detected.");
+                    Trace.TraceInformation($"UtcNow: {DateTime.UtcNow:O}    lastError.queryTime: {this.lastError.Value.queryTime:O}");
                     throw new InvalidOperationException("Liveness violation detected.");
                 }
+            }
+            else
+            {
+                this.lastError = null;
             }
         }
 
@@ -106,6 +111,7 @@
                 {
                     Trace.TraceWarning(ex.ToString());
                     Console.WriteLine(ex.ToString());
+                    throw;
                 }
                 finally
                 {
