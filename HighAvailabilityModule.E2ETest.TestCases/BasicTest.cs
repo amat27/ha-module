@@ -20,9 +20,9 @@
             this.judge = judge;
         }
 
-        public async Task Start()
+        public async Task Start(string type)
         {
-            AlgorithmController controller = new AlgorithmController(2, "A", TimeSpan.FromSeconds(0.2), TimeSpan.FromSeconds(1), this.clientFactory, this.judge);
+            AlgorithmController controller = new AlgorithmController(2, type, TimeSpan.FromSeconds(0.2), TimeSpan.FromSeconds(1), this.clientFactory, this.judge);
             Task.Run(controller.Start);
             await Task.Run(controller.WatchResult);
         }

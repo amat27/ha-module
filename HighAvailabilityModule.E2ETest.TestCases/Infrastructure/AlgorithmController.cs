@@ -60,7 +60,7 @@
                 }
                 else if (DateTime.UtcNow - this.lastError.Value.queryTime > (2 * this.Timeout)) 
                 {
-                    Trace.TraceError("Liveness violation detected.");
+                    Trace.TraceError($"Client Type{entry.Utype}    Liveness violation detected.");
                     Trace.TraceInformation($"UtcNow: {DateTime.UtcNow:O}    lastError.queryTime: {this.lastError.Value.queryTime:O}");
                     throw new InvalidOperationException("Liveness violation detected.");
                 }
@@ -101,8 +101,8 @@
                 {
                     var entry = await this.judge.GetHeartBeatEntryAsync(this.Utype);
                     var livingClients = this.GetLivingClientIds();
-                    Trace.TraceInformation($"Healthy:{livingClients.Contains(entry.Uuid)}, livingClients: {string.Join(",", livingClients)} ");
-                    Console.WriteLine($"Healthy:{livingClients.Contains(entry.Uuid)}, livingClients: {string.Join(",", livingClients)} ");
+                    Trace.TraceInformation($"Healthy:{livingClients.Contains(entry.Uuid)}, livingClients: {string.Join(",", livingClients)} Client Type: {entry.Utype}");
+                    Console.WriteLine($"Healthy:{livingClients.Contains(entry.Uuid)}, livingClients: {string.Join(",", livingClients)} Client Type: {entry.Utype}");
 
                     this.CheckLiveness(entry);
                 }
