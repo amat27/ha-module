@@ -92,8 +92,14 @@
             }
             else if (testType == "chaos")
             {
-                var chaostest = new ChaosTest(clientFactory, judge);
-                await chaostest.Start();
+                Task[] tasks = new Task[typeCount];
+                for (int i = 0; i < typeCount; i++)
+                {
+                    string type = ((char)('A' + i)).ToString();
+                    var basictest = new ChaosTest(clientFactory, judge);
+                    tasks[i] = basictest.Start(type);
+                }
+                await Task.WhenAny(tasks);
             }
             else
             {

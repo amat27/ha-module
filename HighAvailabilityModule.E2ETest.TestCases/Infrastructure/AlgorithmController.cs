@@ -52,6 +52,14 @@
 
         public void CheckLiveness(HeartBeatEntry entry)
         {
+            if (lastError != null)
+            {
+                Trace.TraceInformation($"Client Type: {this.Utype}    Entry Uuid:    {entry.Uuid}    lastError.Uuid: {this.lastError.Value.entry.Uuid}");
+            }
+            else
+            {
+                Trace.TraceInformation($"Client Type: {this.Utype}    Entry Uuid:    {entry.Uuid}    lastError.Uuid: null");
+            }
             if (!this.GetLivingClientIds().Contains(entry.Uuid))
             {
                 if (this.lastError == null || this.lastError.Value.entry.Uuid != entry.Uuid)
@@ -60,7 +68,7 @@
                 }
                 else if (DateTime.UtcNow - this.lastError.Value.queryTime > (2 * this.Timeout)) 
                 {
-                    Trace.TraceError($"Client Type{entry.Utype}    Liveness violation detected.");
+                    Trace.TraceError($"Client Type{this.Utype}    Liveness violation detected.");
                     Trace.TraceInformation($"UtcNow: {DateTime.UtcNow:O}    lastError.queryTime: {this.lastError.Value.queryTime:O}");
                     throw new InvalidOperationException("Liveness violation detected.");
                 }
@@ -101,8 +109,8 @@
                 {
                     var entry = await this.judge.GetHeartBeatEntryAsync(this.Utype);
                     var livingClients = this.GetLivingClientIds();
-                    Trace.TraceInformation($"Healthy:{livingClients.Contains(entry.Uuid)}, livingClients: {string.Join(",", livingClients)} Client Type: {entry.Utype}");
-                    Console.WriteLine($"Healthy:{livingClients.Contains(entry.Uuid)}, livingClients: {string.Join(",", livingClients)} Client Type: {entry.Utype}");
+                    Trace.TraceInformation($"Healthy:{livingClients.Contains(entry.Uuid)}, livingClients: {string.Join(",", livingClients)} Client Type: {this.Utype}");
+                    Console.WriteLine($"Healthy:{livingClients.Contains(entry.Uuid)}, livingClients: {string.Join(",", livingClients)} Client Type: {this.Utype}");
 
                     this.CheckLiveness(entry);
                 }

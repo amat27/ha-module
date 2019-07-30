@@ -21,13 +21,13 @@
             this.judge = judge;
         }
 
-        public async Task Start()
+        public async Task Start(string utype)
         {
             AlgorithmController controller = new AlgorithmController(
                 2,
-                "A",
+                utype,
+                TimeSpan.FromSeconds(0.2),
                 TimeSpan.FromSeconds(1),
-                TimeSpan.FromSeconds(3),
                 (type, name, timeout) => new TestClient(this.clientFactory(type, name, timeout), this.netconf),
                 this.judge);
             Task.Run(controller.Start);
