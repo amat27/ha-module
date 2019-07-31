@@ -68,9 +68,10 @@
                 }
                 else if (DateTime.UtcNow - this.lastError.Value.queryTime > (2 * this.Timeout)) 
                 {
-                    Trace.TraceError($"Client Type{this.Utype}    Liveness violation detected.");
+                    string ExceptionID = Guid.NewGuid().ToString();
+                    Trace.TraceError($"Client Type{this.Utype}    [{ExceptionID}]Liveness violation detected.");
                     Trace.TraceInformation($"UtcNow: {DateTime.UtcNow:O}    lastError.queryTime: {this.lastError.Value.queryTime:O}");
-                    throw new InvalidOperationException("Liveness violation detected.");
+                    throw new InvalidOperationException($"[{ExceptionID}]Liveness violation detected.");
                 }
             }
             else
