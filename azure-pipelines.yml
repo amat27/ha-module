@@ -47,8 +47,8 @@ steps:
   inputs:
     azureSubscription: 'BigCompS-Int1(d50b6b31-cd2f-4c93-83f1-b1acdd32504c)'
     AuthenticationType: 'server'
-    ServerName: 'ha-module-server.database.windows.net'
-    DatabaseName: 'HighAvailabilityWitness'
+    ServerName: $(SERVERNAME)
+    DatabaseName: $(DATABASENAME_W)
     SqlUsername: 'hpcadmin'
     SqlPassword: '!!123abc!!123abc'
     deployType: 'SqlTask'
@@ -59,8 +59,8 @@ steps:
   inputs:
     azureSubscription: 'BigCompS-Int1(d50b6b31-cd2f-4c93-83f1-b1acdd32504c)'
     AuthenticationType: 'server'
-    ServerName: 'ha-module-server.database.windows.net'
-    DatabaseName: 'HighAvailabilityWitness'
+    ServerName: $(SERVERNAME)
+    DatabaseName: $(DATABASENAME_W)
     SqlUsername: 'hpcadmin'
     SqlPassword: '!!123abc!!123abc'
     deployType: 'SqlTask'
@@ -71,8 +71,8 @@ steps:
   inputs:
     azureSubscription: 'BigCompS-Int1(d50b6b31-cd2f-4c93-83f1-b1acdd32504c)'
     AuthenticationType: 'server'
-    ServerName: 'ha-module-server.database.windows.net'
-    DatabaseName: 'HighAvailabilityWitness'
+    ServerName: $(SERVERNAME)
+    DatabaseName: $(DATABASENAME_W)
     SqlUsername: 'hpcadmin'
     SqlPassword: '!!123abc!!123abc'
     deployType: 'SqlTask'
@@ -100,8 +100,8 @@ steps:
   inputs:
     azureSubscription: 'BigCompS-Int1(d50b6b31-cd2f-4c93-83f1-b1acdd32504c)'
     AuthenticationType: 'server'
-    ServerName: 'ha-module-server.database.windows.net'
-    DatabaseName: 'HighAvailabilityStorage'
+    ServerName: $(SERVERNAME)
+    DatabaseName: $(DATABASENAME_S)
     SqlUsername: 'hpcadmin'
     SqlPassword: '!!123abc!!123abc'
     deployType: 'SqlTask'
@@ -112,8 +112,8 @@ steps:
   inputs:
     azureSubscription: 'BigCompS-Int1(d50b6b31-cd2f-4c93-83f1-b1acdd32504c)'
     AuthenticationType: 'server'
-    ServerName: 'ha-module-server.database.windows.net'
-    DatabaseName: 'HighAvailabilityStorage'
+    ServerName: $(SERVERNAME)
+    DatabaseName: $(DATABASENAME_S)
     SqlUsername: 'hpcadmin'
     SqlPassword: '!!123abc!!123abc'
     deployType: 'SqlTask'
@@ -124,8 +124,8 @@ steps:
   inputs:
     azureSubscription: 'BigCompS-Int1(d50b6b31-cd2f-4c93-83f1-b1acdd32504c)'
     AuthenticationType: 'server'
-    ServerName: 'ha-module-server.database.windows.net'
-    DatabaseName: 'HighAvailabilityStorage'
+    ServerName: $(SERVERNAME)
+    DatabaseName: $(DATABASENAME_S)
     SqlUsername: 'hpcadmin'
     SqlPassword: '!!123abc!!123abc'
     deployType: 'SqlTask'
