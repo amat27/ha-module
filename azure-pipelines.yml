@@ -45,38 +45,38 @@ steps:
 
 - task: SqlAzureDacpacDeployment@1
   inputs:
-    azureSubscription: 'BigCompS-Int1(d50b6b31-cd2f-4c93-83f1-b1acdd32504c)'
+    azureSubscription: $(AZURESUBSCRIPTION)
     AuthenticationType: 'server'
     ServerName: $(SERVERNAME)
     DatabaseName: $(DATABASENAME_W)
     SqlUsername: $(USERNAME)
     SqlPassword: $(PASSWORD)
     deployType: 'SqlTask'
-    SqlFile: '$(System.DefaultWorkingDirectory)/HighAvailabilityModule.Server.SQL/SQLstartup.sql'
+    SqlFile: '$(System.DefaultWorkingDirectory)/$(PATH_SQLSTARTUP)'
     IpDetectionMethod: 'AutoDetect'
 
 - task: SqlAzureDacpacDeployment@1
   inputs:
-    azureSubscription: 'BigCompS-Int1(d50b6b31-cd2f-4c93-83f1-b1acdd32504c)'
+    azureSubscription: $(AZURESUBSCRIPTION)
     AuthenticationType: 'server'
     ServerName: $(SERVERNAME)
     DatabaseName: $(DATABASENAME_W)
     SqlUsername: $(USERNAME)
     SqlPassword: $(PASSWORD)
     deployType: 'SqlTask'
-    SqlFile: '$(System.DefaultWorkingDirectory)/HighAvailabilityModule.UnitTest.SQL/tSQLt.class.sql'
+    SqlFile: '$(System.DefaultWorkingDirectory)/$(PATH_TSQLTCLASS)'
     IpDetectionMethod: 'AutoDetect'
 
 - task: SqlAzureDacpacDeployment@1
   inputs:
-    azureSubscription: 'BigCompS-Int1(d50b6b31-cd2f-4c93-83f1-b1acdd32504c)'
+    azureSubscription: $(AZURESUBSCRIPTION)
     AuthenticationType: 'server'
     ServerName: $(SERVERNAME)
     DatabaseName: $(DATABASENAME_W)
     SqlUsername: $(USERNAME)
     SqlPassword: $(PASSWORD)
     deployType: 'SqlTask'
-    SqlFile: '$(System.DefaultWorkingDirectory)/HighAvailabilityModule.UnitTest.SQL/MembershipServerSQLUnitTest.sql'
+    SqlFile: '$(System.DefaultWorkingDirectory)/$(PATH_MEMBERSHIPSERVERSQLUNITTEST)'
     IpDetectionMethod: 'AutoDetect'
 
 - task: runtsqltunittests@0
@@ -98,38 +98,38 @@ steps:
 
 - task: SqlAzureDacpacDeployment@1
   inputs:
-    azureSubscription: 'BigCompS-Int1(d50b6b31-cd2f-4c93-83f1-b1acdd32504c)'
+    azureSubscription: $(AZURESUBSCRIPTION)
     AuthenticationType: 'server'
     ServerName: $(SERVERNAME)
     DatabaseName: $(DATABASENAME_S)
     SqlUsername: $(USERNAME)
     SqlPassword: $(PASSWORD)
     deployType: 'SqlTask'
-    SqlFile: '$(System.DefaultWorkingDirectory)/HighAvailabilityModule.Storage.Server/startup.sql'
+    SqlFile: '$(System.DefaultWorkingDirectory)/$(PATH_STORAGESTARTUP)'
     IpDetectionMethod: 'AutoDetect'
 
 - task: SqlAzureDacpacDeployment@1
   inputs:
-    azureSubscription: 'BigCompS-Int1(d50b6b31-cd2f-4c93-83f1-b1acdd32504c)'
+    azureSubscription: $(AZURESUBSCRIPTION)
     AuthenticationType: 'server'
     ServerName: $(SERVERNAME)
     DatabaseName: $(DATABASENAME_S)
     SqlUsername: $(USERNAME)
     SqlPassword: $(PASSWORD)
     deployType: 'SqlTask'
-    SqlFile: '$(System.DefaultWorkingDirectory)/HighAvailabilityModule.UnitTest.SQL/tSQLt.class.sql'
+    SqlFile: '$(System.DefaultWorkingDirectory)/$(PATH_TSQLTCLASS)'
     IpDetectionMethod: 'AutoDetect'
 
 - task: SqlAzureDacpacDeployment@1
   inputs:
-    azureSubscription: 'BigCompS-Int1(d50b6b31-cd2f-4c93-83f1-b1acdd32504c)'
+    azureSubscription: $(AZURESUBSCRIPTION)
     AuthenticationType: 'server'
     ServerName: $(SERVERNAME)
     DatabaseName: $(DATABASENAME_S)
     SqlUsername: $(USERNAME)
     SqlPassword: $(PASSWORD)
     deployType: 'SqlTask'
-    SqlFile: '$(System.DefaultWorkingDirectory)/HighAvailabilityModule.UnitTest.SQL/MembershipSQLStorageUnitTest.sql'
+    SqlFile: '$(System.DefaultWorkingDirectory)/$(PATH_MEMBERSHIPSQLSTORAGEUNITTEST)'
     IpDetectionMethod: 'AutoDetect'
 
 - task: runtsqltunittests@0
