@@ -52,7 +52,7 @@ steps:
     SqlUsername: $(USERNAME)
     SqlPassword: $(PASSWORD)
     deployType: 'SqlTask'
-    SqlFile: '$(System.DefaultWorkingDirectory)/$(PATH_SQLSTARTUP)'
+    SqlFile: '$(System.DefaultWorkingDirectory)/HighAvailabilityModule.Server.SQL/SQLstartup.sql'
     IpDetectionMethod: 'AutoDetect'
 
 - task: SqlAzureDacpacDeployment@1
@@ -64,7 +64,7 @@ steps:
     SqlUsername: $(USERNAME)
     SqlPassword: $(PASSWORD)
     deployType: 'SqlTask'
-    SqlFile: '$(System.DefaultWorkingDirectory)/$(PATH_TSQLTCLASS)'
+    SqlFile: '$(System.DefaultWorkingDirectory)/HighAvailabilityModule.UnitTest.SQL/tSQLt.class.sql'
     IpDetectionMethod: 'AutoDetect'
 
 - task: SqlAzureDacpacDeployment@1
@@ -76,7 +76,7 @@ steps:
     SqlUsername: $(USERNAME)
     SqlPassword: $(PASSWORD)
     deployType: 'SqlTask'
-    SqlFile: '$(System.DefaultWorkingDirectory)/$(PATH_MEMBERSHIPSERVERSQLUNITTEST)'
+    SqlFile: '$(System.DefaultWorkingDirectory)/HighAvailabilityModule.UnitTest.SQL/MembershipServerSQLUnitTest.sql'
     IpDetectionMethod: 'AutoDetect'
 
 - task: runtsqltunittests@0
@@ -105,7 +105,7 @@ steps:
     SqlUsername: $(USERNAME)
     SqlPassword: $(PASSWORD)
     deployType: 'SqlTask'
-    SqlFile: '$(System.DefaultWorkingDirectory)/$(PATH_STORAGESTARTUP)'
+    SqlFile: '$(System.DefaultWorkingDirectory)/HighAvailabilityModule.Storage.Server/startup.sql'
     IpDetectionMethod: 'AutoDetect'
 
 - task: SqlAzureDacpacDeployment@1
@@ -117,7 +117,7 @@ steps:
     SqlUsername: $(USERNAME)
     SqlPassword: $(PASSWORD)
     deployType: 'SqlTask'
-    SqlFile: '$(System.DefaultWorkingDirectory)/$(PATH_TSQLTCLASS)'
+    SqlFile: '$(System.DefaultWorkingDirectory)/HighAvailabilityModule.UnitTest.SQL/tSQLt.class.sql'
     IpDetectionMethod: 'AutoDetect'
 
 - task: SqlAzureDacpacDeployment@1
@@ -129,7 +129,7 @@ steps:
     SqlUsername: $(USERNAME)
     SqlPassword: $(PASSWORD)
     deployType: 'SqlTask'
-    SqlFile: '$(System.DefaultWorkingDirectory)/$(PATH_MEMBERSHIPSQLSTORAGEUNITTEST)'
+    SqlFile: '$(System.DefaultWorkingDirectory)/HighAvailabilityModule.UnitTest.SQL/MembershipSQLStorageUnitTest.sql'
     IpDetectionMethod: 'AutoDetect'
 
 - task: runtsqltunittests@0
