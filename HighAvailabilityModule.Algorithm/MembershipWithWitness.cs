@@ -117,8 +117,8 @@
         {
             if (this.lastSeenHeartBeat.Entry == null)
             {
-                // throw new InvalidOperationException($"[Protocol][{this.Uuid}] Can't send heartbeat before querying current primary.");
                 Trace.TraceWarning($"[Protocol][{this.Uuid}] Can't send heartbeat before querying current primary.");
+                throw new InvalidOperationException($"[Protocol][{this.Uuid}] Can't send heartbeat before querying current primary.");
             }
 
             try
